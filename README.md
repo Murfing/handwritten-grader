@@ -1,105 +1,201 @@
-📝 Automated Handwritten Assessment Pipeline
+# 📝 Automated Handwritten Assessment Pipeline
 
-An end-to-end prototype designed to digitize and grade handwritten student short answers using State-of-the-Art (SOTA) AI models. This project connects a Transformer-based OCR engine with a Large Language Model (LLM) to replicate human grading workflows.
+## Project Overview
 
-🚀 Project Overview
+The goal of this project is to **automate the grading process for handwritten exams**. It takes raw images of student answers, extracts the text using advanced OCR, and assigns a score with detailed feedback based on a teacher-defined rubric.
 
-The goal of this project is to automate the grading process for handwritten exams. It takes raw images of student answers, extracts the text, and assigns a score and feedback based on a strict teacher-defined rubric.
-
-Key Features
-
-Handwriting Recognition: Uses Microsoft TrOCR (Transformer OCR), a model fine-tuned on the IAM handwriting dataset, for high-accuracy text extraction.
-
-AI Grading: Uses Google Gemini 2.5 Flash to evaluate the extracted text against a JSON rubric, providing scores and constructive feedback.
-
-Robust Pipeline: Includes automatic rate-limiting (to handle API quotas), incremental saving (to prevent data loss), and error handling.
-
-Modular Design: Separate modules for OCR, Grading, and Configuration.
-
-🛠️ Architecture
+## 🛠️ Architecture
 
 The pipeline follows a sequential flow:
 
-Input: Reads images (.jpg) from the data/images directory.
+```
+Input Images → Preprocessing → OCR Engine (TrOCR) → Grading Agent (Gemini) → CSV Output
+```
 
-Preprocessing: Filename parsing to identify Student ID and Question ID.
+### Pipeline Flow
 
-OCR Engine (TrOCR): Converts the image into a text string.
+1. **Input**: Reads images (`.jpg`, `.png`, `.jpeg`) from the `data/images` directory
+2. **Preprocessing**: Filename parsing to identify Student ID and Question ID
+3. **OCR Engine (TrOCR)**: Converts the handwritten image into a text string
+4. **Grading Agent (Gemini)**: Evaluates the OCR text against the rubric and generates a JSON evaluation
+5. **Output**: Appends results incrementally to `data/output/results.csv`
 
-Grading Agent (Gemini): Takes the OCR Text + Rubric and generates a JSON evaluation.
+---
 
-Output: Appends the results to data/output/results.csv.
+## ⚙️ Setup & Installation
 
-⚙️ Setup & Installation
+### Prerequisites
 
-1. Clone the Repository
+- Python 3.8 or higher
+- Google Gemini API key ([Get it here](https://ai.google.dev/))
+- (Optional) CUDA-compatible GPU for faster TrOCR inference
 
-git clone <your-repo-url>
+### 1. Clone the Repository
+
+```bash
+git clone https://github.com/yourusername/handwritten-grader.git
 cd handwritten-grader
+```
 
+### 2. Create a Virtual Environment
 
-2. Create a Virtual Environment
-
-It is recommended to use a virtual environment to manage dependencies.
-
-# Windows
+**Windows**
+```bash
 python -m venv venv
 venv\Scripts\activate
+```
 
-# Mac/Linux
+**Mac/Linux**
+```bash
 python3 -m venv venv
 source venv/bin/activate
+```
 
-
-3. Install Dependencies
+### 3. Install Dependencies
 
 This project requires PyTorch (for TrOCR) and the Google GenAI SDK.
 
-pip install torch torchvision transformers pillow pandas python-dotenv google-genai
+```bash
+pip install torch torchvision transformers pillow pandas python-dotenv google-generativeai
+```
 
+### 4. Configure Environment Variables
 
-4. Configure Environment Variables
+Create a `.env` file in the root directory and add your Google Gemini API key:
 
-Create a .env file in the root directory and add your Google Gemini API key:
-
+```env
 GOOGLE_API_KEY=your_api_key_here
+```
 
+⚠️ **Important**: Never commit your `.env` file to version control. It's already included in `.gitignore`.
 
-📂 Project Structure
+---
 
+## 📂 Project Structure
+
+```
 handwritten-grader/
 │
 ├── config/
-│   └── rubric.json         # Defines questions, max marks, and grading criteria
+│   └── rubric.json              # Defines questions, max marks, and grading criteria
 │
 ├── data/
-│   ├── images/             # Input images (Format: studentID_questionID.jpg)
-│   ├── output/             # Generated CSV results
-│   └── ground_truth.csv    # (Optional) Teacher scores for validation
+│   ├── images/                  # Input images (Format: studentID_questionID.jpg)
+│   ├── output/                  # Generated CSV results
+│   └── ground_truth.csv         # (Optional) Teacher scores for validation
 │
 ├── src/
-│   ├── config.py           # Central configuration management
-│   ├── ocr_engine.py       # TrOCR implementation (Hugging Face)
-│   ├── grading_model.py    # Gemini API wrapper for grading logic
-│   ├── pipeline.py         # Main script orchestration
-│   └── utils.py            # Logger and helper functions
+│   ├── __init__.py
+│   ├── config.py                # Central configuration management
+│   ├── ocr_engine.py            # TrOCR implementation (Hugging Face)
+│   ├── grading_model.py         # Gemini API wrapper for grading logic
+│   ├── pipeline.py              # Main script orchestration
+│   └── utils.py                 # Logger and helper functions
 │
-├── .env                    # API Keys (Excluded from Git)
-└── README.md               # Project documentation
+├── .env                         # API Keys (Excluded from Git)
+├── .gitignore
+├── requirements.txt             # Python dependencies
+└── README.md                    # Project documentation
+```
 
+---
 
-🏃‍♂️ Usage
+## 🏃‍♂️ Usage
 
-1. Prepare Data
+### 1. Prepare Your Data
 
-Place your handwritten images in data/images/.
+#### Organize Images
+Place your handwritten answer images in `data/images/`.
 
-Ensure filenames match the format: student01_q1.jpg.
+**Filename Format**: `{studentID}_{questionID}.jpg`
 
-Update config/rubric.json to match your questions.
+Examples:
+- `student01_q1.jpg`
+- `student02_q2.jpg`
+- `alice_q3.jpg`
 
-2. Run the Pipeline
+#### Configure Rubric
+Update `config/rubric.json` to match your questions. Example structure:
 
-Execute the pipeline module from the root directory:
+```json
+[
+  {
+    "question_id": "q1",
+    "question_text": "Explain the water cycle.",
+    "max_marks": 10,
+    "rubric": {
+      "evaporation": 3,
+      "condensation": 3,
+      "precipitation": 2,
+      "collection": 2
+    }
+  }
+]
+```
 
+### 2. Run the Pipeline
+
+Execute the pipeline from the root directory:
+
+```bash
 python -m src.pipeline
+```
+
+### 3. View Results
+
+Results are saved incrementally to `data/output/results.csv`:
+
+| student_id | question_id | ocr_text | score | max_marks | feedback |
+|------------|-------------|----------|-------|-----------|----------|
+| student01 | q1 | The water cycle... | 8 | 10 | Good explanation... |
+
+---
+
+## 📊 Output Format
+
+The pipeline generates a CSV file with the following columns:
+
+- **student_id**: Extracted from filename
+- **question_id**: Extracted from filename
+- **ocr_text**: Raw text extracted by TrOCR
+- **score**: Points awarded (0 to max_marks)
+- **max_marks**: Maximum possible score
+- **feedback**: Detailed explanation from Gemini
+
+---
+
+## 🔧 Configuration
+
+### Modifying OCR Settings
+
+Edit `src/ocr_engine.py` to change the TrOCR model:
+
+```python
+# For base model (faster, less accurate)
+processor = TrOCRProcessor.from_pretrained('microsoft/trocr-base-handwritten')
+model = VisionEncoderDecoderModel.from_pretrained('microsoft/trocr-base-handwritten')
+
+# For large model (slower, more accurate)
+processor = TrOCRProcessor.from_pretrained('microsoft/trocr-large-handwritten')
+model = VisionEncoderDecoderModel.from_pretrained('microsoft/trocr-large-handwritten')
+```
+
+### Adjusting Rate Limits
+
+Modify the sleep duration in `src/pipeline.py`:
+
+```python
+if i < len(files) - 1:
+    logger.info("   > Sleeping 10s...")
+    time.sleep(10)  # Change this value
+```
+
+### Changing Gemini Model
+
+Edit `src/grading_model.py`:
+
+```python
+self.model = genai.GenerativeModel('gemini-2.0-flash-exp')  # Change model here
+```
+
+---
