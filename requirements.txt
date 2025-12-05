@@ -1,0 +1,16 @@
+python-dotenv
+pandas
+openpyxl
+paddlepaddle
+paddleocr
+opencv-python
+google
+requests
+matplotlib
+jupyter
+notebook
+torch 
+torchvision 
+transformers 
+pillow 
+sentencepiece

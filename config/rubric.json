@@ -1,0 +1,20 @@
+[
+  {
+    "question_id": "q1",
+    "question_text": "Why was Ranga's homecoming considered a big event in the village?",
+    "max_marks": 3,
+    "rubric": "Award 1 mark for each key point: 1) He was the village accountant's son. 2) He was the first to go to Bangalore to learn English (rare achievement). 3) Villagers wanted to see if he had changed or lost his caste (sacred thread). Deduct marks for answers that only discuss the village scenery or claim he became a 'big officer' without mentioning English."
+  },
+  {
+    "question_id": "q2",
+    "question_text": "What were Ranga's views on marriage initially?",
+    "max_marks": 3,
+    "rubric": "Full marks (3) if the student mentions he wanted to marry a 'mature' girl he could admire/talk to lovingly, and was against child marriage (giving Shakuntala/Dushyanta example is a plus). Partial marks (1.5) if they only say 'he wanted to remain a bachelor' or 'didn't want a young girl'. 0 marks for saying he believed in love marriage regardless of caste/age (incorrect)."
+  },
+  {
+    "question_id": "q3",
+    "question_text": "Briefly describe the narrator's role in Ranga's marriage.",
+    "max_marks": 4,
+    "rubric": "Award 4 marks for a complete answer: 1) Narrator (Shyama) manipulated the situation. 2) Arranged a meeting while Ratna was singing. 3) Tutored the astrologer (Shastri) to lie to Ranga. Award 1-2 marks if they vaguely say 'he helped them meet'. 0 marks if they say 'he did nothing'."
+  }
+]

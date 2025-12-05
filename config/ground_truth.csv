@@ -1,0 +1,16 @@
+student_id,question_id,teacher_score
+student01,q1,3
+student01,q2,3
+student01,q3,4
+student02,q1,2.5
+student02,q2,2.5
+student02,q3,3
+student03,q1,1
+student03,q2,0.5
+student03,q3,1
+student04,q1,2
+student04,q2,2
+student04,q3,3
+student05,q1,0
+student05,q2,0
+student05,q3,0
